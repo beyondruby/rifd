@@ -1,0 +1,241 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Download,
+  Sparkles,
+  UserPlus,
+  Home,
+  Gift,
+  Share2,
+  Calendar,
+  ShoppingBag,
+  AlertCircle,
+  User,
+  Settings,
+  X,
+  Check,
+  ArrowRight
+} from 'lucide-react';
+
+const JourneyFlow = () => {
+  const [activePhase, setActivePhase] = useState(null);
+  const [pathProgress, setPathProgress] = useState(0);
+
+  useEffect(() => {
+    // Animate path on mount
+    const timer = setInterval(() => {
+      setPathProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(timer);
+          return 100;
+        }
+        return prev + 1;
+      });
+    }, 20);
+    return () => clearInterval(timer);
+  }, []);
+
+  const phases = [
+    {
+      id: 'discovery',
+      title: 'Discovery',
+      color: '#6366F1',
+      gradient: 'from-indigo-400 to-violet-500',
+      pathD: 'M0,50 C50,-20 150,120 200,50',
+      steps: [
+        { icon: Download, text: 'App Store Discovery', status: 'good' },
+        { icon: Sparkles, text: 'Initial Impression', status: 'warning' },
+        { icon: ArrowRight, text: 'App Download', status: 'good' }
+      ],
+      issues: ['Limited value proposition', 'No social proof', 'Basic onboarding']
+    },
+    {
+      id: 'authentication',
+      title: 'Authentication',
+      color: '#EC4899',
+      gradient: 'from-pink-400 to-rose-500',
+      pathD: 'M0,50 C50,120 150,-20 200,50',
+      steps: [
+        { icon: UserPlus, text: 'Sign Up Flow', status: 'error' },
+        { icon: User, text: 'Manual Login', status: 'error' },
+        { icon: Home, text: 'Profile Setup', status: 'warning' }
+      ],
+      issues: ['High friction login', 'No social auth', 'Missing verification']
+    },
+    {
+      id: 'home',
+      title: 'Home Experience',
+      color: '#10B981',
+      gradient: 'from-emerald-400 to-teal-500',
+      pathD: 'M0,50 C50,-20 150,120 200,50',
+      steps: [
+        { icon: Home, text: 'Empty State', status: 'error' },
+        { icon: Calendar, text: 'Event Creation', status: 'warning' },
+        { icon: Settings, text: 'Customization', status: 'warning' }
+      ],
+      issues: ['Poor empty states', 'No guidance', 'Limited features']
+    },
+    {
+      id: 'gifting',
+      title: 'Gift Management',
+      color: '#F59E0B',
+      gradient: 'from-amber-400 to-orange-500',
+      pathD: 'M0,50 C50,120 150,-20 200,50',
+      steps: [
+        { icon: Gift, text: 'Manual Entry', status: 'error' },
+        { icon: ShoppingBag, text: 'Store Integration', status: 'error' },
+        { icon: AlertCircle, text: 'Gift Validation', status: 'error' }
+      ],
+      issues: ['Complex flow', 'Manual entry burden', 'Poor integration']
+    },
+    {
+      id: 'social',
+      title: 'Social Features',
+      color: '#3B82F6',
+      gradient: 'from-blue-400 to-sky-500',
+      pathD: 'M0,50 C50,-20 150,120 200,50',
+      steps: [
+        { icon: Share2, text: 'List Sharing', status: 'warning' },
+        { icon: User, text: 'Collaboration', status: 'error' },
+        { icon: Settings, text: 'Privacy Controls', status: 'warning' }
+      ],
+      issues: ['Limited social features', 'No engagement', 'Basic sharing']
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Animated Header */}
+        <div className="text-center mb-20">
+          <div className="relative inline-block">
+            <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text animate-gradient">
+              User Journey Analysis
+            </h1>
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 rounded-lg blur opacity-20 animate-pulse"></div>
+          </div>
+        </div>
+
+        {/* Journey Flow */}
+        <div className="relative">
+          {/* Phases */}
+          <div className="flex flex-col space-y-24">
+            {phases.map((phase, index) => (
+              <div 
+                key={phase.id}
+                className={`relative transform transition-all duration-500 ${
+                  index % 2 === 0 ? 'translate-x-0' : 'translate-x-96'
+                }`}
+                onMouseEnter={() => setActivePhase(phase.id)}
+                onMouseLeave={() => setActivePhase(null)}
+              >
+                {/* Phase Card */}
+                <div className={`
+                  relative group
+                  bg-gradient-to-br ${phase.gradient}
+                  rounded-2xl p-8 shadow-xl
+                  transform transition-all duration-500
+                  hover:scale-105 hover:shadow-2xl
+                  ${activePhase === phase.id ? 'scale-105 z-20' : 'z-10'}
+                `}>
+                  {/* Phase Number */}
+                  <div className="absolute -left-16 top-1/2 transform -translate-y-1/2">
+                    <span className="text-8xl font-bold text-white opacity-10">
+                      {index + 1}
+                    </span>
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10">
+                    <h3 className="text-2xl font-bold mb-6">{phase.title}</h3>
+                    
+                    {/* Steps */}
+                    <div className="grid grid-cols-3 gap-6">
+                      {phase.steps.map((step, stepIndex) => (
+                        <div 
+                          key={stepIndex}
+                          className="bg-white bg-opacity-10 rounded-lg p-4 backdrop-blur-sm
+                          transform transition-all duration-300 hover:scale-105"
+                        >
+                          <step.icon className="w-6 h-6 mb-2" />
+                          <p className="text-sm">{step.text}</p>
+                          <div className={`mt-2 flex items-center space-x-1 ${
+                            step.status === 'error' ? 'text-red-400' :
+                            step.status === 'warning' ? 'text-yellow-400' :
+                            'text-green-400'
+                          }`}>
+                            {step.status === 'error' ? <X className="w-4 h-4" /> :
+                             step.status === 'warning' ? <AlertCircle className="w-4 h-4" /> :
+                             <Check className="w-4 h-4" />}
+                            <span className="text-xs">{step.status}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Issues Panel */}
+                    <div className={`
+                      absolute left-full ml-8 top-0 w-64
+                      bg-white text-gray-800 rounded-lg p-4 shadow-xl
+                      transform transition-all duration-300
+                      ${activePhase === phase.id ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0 pointer-events-none'}
+                    `}>
+                      <h4 className="font-semibold mb-3">Critical Issues</h4>
+                      <ul className="space-y-2">
+                        {phase.issues.map((issue, i) => (
+                          <li key={i} className="flex items-center space-x-2 text-sm">
+                            <AlertCircle className="w-4 h-4 text-red-500" />
+                            <span>{issue}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Connecting Path */}
+                {index < phases.length - 1 && (
+                  <svg
+                    className="absolute -bottom-24 left-1/2 w-96 h-24"
+                    style={{
+                      transform: index % 2 === 0 ? 'translateX(-20%)' : 'translateX(-80%) scaleX(-1)'
+                    }}
+                  >
+                    <path
+                      d={phase.pathD}
+                      stroke="url(#gradient)"
+                      strokeWidth="2"
+                      fill="none"
+                      strokeDasharray="200"
+                      strokeDashoffset={200 - (pathProgress * 2)}
+                      className="transition-all duration-1000"
+                    />
+                    <defs>
+                      <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor={phase.color} />
+                        <stop offset="100%" stopColor={phases[index + 1].color} />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        @keyframes gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .animate-gradient {
+          background-size: 200% 200%;
+          animation: gradient 8s ease infinite;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default JourneyFlow;
